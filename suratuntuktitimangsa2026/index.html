@@ -38,13 +38,13 @@
 #flipbook .page::before { width: 8px; }
 #flipbook .page-right::before {
   right: 0;
-  width: var(--stack-right, 10px);
+  width: calc(min(10px, 1%) * var(--stack-right, 1));
   background: repeating-linear-gradient(to left,
     #ece7da 0, #ece7da 1px, #a9a395 1px, #a9a395 2px);
 }
 #flipbook .page-left::before {
   left: 0;
-  width: var(--stack-left, 0px);
+  width: calc(min(10px, 1%) * var(--stack-left, 0));
   background: repeating-linear-gradient(to right,
     #ece7da 0, #ece7da 1px, #a9a395 1px, #a9a395 2px);
 }
@@ -476,9 +476,8 @@ pageFlip = new St.PageFlip(flipbookEl, {
   function updatePageIndicator(currentIndex, displayLabels, totalRealPages) {
        // Paper-stack thickness follows how far along the book is
     const progress = currentIndex / (displayLabels.length - 1);
-    const MAX_STACK = 10; // pixels
-    flipbookEl.style.setProperty('--stack-left', (MAX_STACK * progress) + 'px');
-    flipbookEl.style.setProperty('--stack-right', (MAX_STACK * (1 - progress)) + 'px');
+    flipbookEl.style.setProperty('--stack-left', progress);
+    flipbookEl.style.setProperty('--stack-right', 1 - progress);
     let label = displayLabels[currentIndex];
     if (label == null) {
       // On the blank filler page: show the nearest real page before it.
