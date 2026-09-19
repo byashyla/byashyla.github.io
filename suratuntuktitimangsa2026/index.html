@@ -422,20 +422,20 @@
 
     const { width, height } = computeDimensions(currentAspect);
 
-    pageFlip = new St.PageFlip(flipbookEl, {
-      width: width,
-      height: height,
-      size: 'fixed',
-      minWidth: 200,
-      maxWidth: 1200,
-      minHeight: 250,
-      maxHeight: 1600,
-      flippingTime: 1200,
-      maxShadowOpacity: 0.3,
-      showCover: true,
-      mobileScrollSupport: true,
-      usePortrait: window.innerWidth < 700
-    });
+pageFlip = new St.PageFlip(flipbookEl, {
+  width: width,
+  height: height,
+  size: 'fixed',
+  minWidth: 200,
+  maxWidth: 1200,
+  minHeight: 250,
+  maxHeight: 1600,
+  flippingTime: 1200,
+  maxShadowOpacity: 0.3,
+  showCover: true,
+  mobileScrollSupport: true,
+  usePortrait: false   // always show double-page spreads, even on mobile
+});
 
     pageFlip.loadFromHTML(document.querySelectorAll('#flipbook .page'));
 
