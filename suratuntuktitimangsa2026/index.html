@@ -243,14 +243,40 @@
   const TARGET_WIDTH = 1000;
 
   let pageFlip = null;
-  const flipSound = new Audio('flip.mp3');
-flipSound.preload = 'auto';
+   // ---- Flip sound: loads once, then plays with almost no delay ----
+  let audioCtx = null;
+  let flipBuffer = null;
 
-function playFlipSound() {
-  const s = flipSound.cloneNode();
-  s.volume = 0.5;
-  s.play().catch(() => {});
-}
+  async function loadFlipSound() {
+    try {
+      const res = await fetch('flip.mp3');
+      const data = await res.arrayBuffer();
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      flipBuffer = await audioCtx.decodeAudioData(data);
+    } catch (err) {
+      console.log('Flip sound not loaded:', err);
+    }
+  }
+  loadFlipSound();
+
+  // Browsers keep sound switched off until the visitor touches the page once.
+  ['pointerdown', 'keydown', 'touchstart'].forEach((evt) => {
+    window.addEventListener(evt, () => {
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    });
+  });
+
+  function playFlipSound() {
+    if (!audioCtx || !flipBuffer) return;
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const source = audioCtx.createBufferSource();
+    source.buffer = flipBuffer;
+    const volume = audioCtx.createGain();
+    volume.gain.value = 0.5;   // 0 = silent, 1 = full volume
+    source.connect(volume);
+    volume.connect(audioCtx.destination);
+    source.start(0);
+  }
   let currentAspect = 1;
 
   window.addEventListener('resize', () => {
