@@ -20,22 +20,22 @@
 }
 
 /* Center "pit" shadow, darkest right at the spine */
-#flipbook .page::after { width: 14%; }
+#flipbook .page::after { width: 8%; }
 #flipbook .page-right::after {
   left: 0;
   background: linear-gradient(to right,
     rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.35) 22%,
-    rgba(255, 255, 255, 0.06) 55%, rgba(255, 255, 255, 0) 100%);
+    rgba(255, 255, 255, 0.02) 55%, rgba(255, 255, 255, 0) 100%);
 }
 #flipbook .page-left::after {
   right: 0;
   background: linear-gradient(to left,
     rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.35) 22%,
-    rgba(255, 255, 255, 0.06) 55%, rgba(255, 255, 255, 0) 100%);
+    rgba(255, 255, 255, 0.02) 55%, rgba(255, 255, 255, 0) 100%);
 }
 
 /* Paper-stack edges on the outer sides of the book */
-#flipbook .page::before { width: 5px; }
+#flipbook .page::before { width: 8px; }
 #flipbook .page-right::before {
   right: 0;
   background: repeating-linear-gradient(to left,
