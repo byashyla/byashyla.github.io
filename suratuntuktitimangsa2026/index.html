@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Surat untuk Titimangsa dan Segala Isinya (2026)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
+<style>
+  :root {
+    --ink: #1c1a17;
+    --paper: #f6f3ec;
+    --paper-dark: #ece7db;
+    --accent: #8a6d3b;
+    --accent-soft: #c9b896;
+    --shadow: rgba(28, 26, 23, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: var(--ink);
+    font-family: 'Georgia', 'Iowan Old Style', serif;
+    color: var(--paper);
+    overflow: hidden;
+  }
+
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  /* ---------- Upload screen ---------- */
+  #upload-screen {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(ellipse at top, #2a2620 0%, #1c1a17 60%);
+  }
+
+  .upload-card {
+    text-align: center;
+    padding: 56px 64px;
+    border: 1px solid rgba(201, 184, 150, 0.25);
+    border-radius: 4px;
+    max-width: 480px;
+  }
+
+  .upload-card h1 {
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin: 0 0 8px;
+    color: var(--paper);
+  }
+
+  .upload-card p {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    color: var(--accent-soft);
+    margin: 0 0 32px;
+    line-height: 1.6;
+  }
+
+  #file-input { display: none; }
+
+  .upload-btn {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    display: inline-block;
+    padding: 13px 34px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    font-size: 14px;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .upload-btn:hover { background: #7a5f31; }
+
+  #upload-status {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--accent-soft);
+    min-height: 18px;
+  }
+
+  .drop-hint {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    color: rgba(201, 184, 150, 0.5);
+    margin-top: 14px;
+  }
+
+  /* ---------- Viewer screen ---------- */
+  #viewer-screen {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  #topbar {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    background: #000;
+    border-bottom: 1px solid rgba(201, 184, 150, 0.15);
+    flex-shrink: 0;
+  }
+
+  #doc-title {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    color: var(--paper);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar-btn {
+    font-family: inherit;
+    background: transparent;
+    border: 1px solid rgba(201, 184, 150, 0.3);
+    color: var(--accent-soft);
+    padding: 7px 14px;
+    border-radius: 2px;
+    font-size: 12px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+
+  .topbar-btn:hover {
+    border-color: var(--accent-soft);
+    color: var(--paper);
+  }
+
+  #stage-wrap {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 20px;
+    overflow: hidden;
+    background: #000;
+  }
+
+  #flipbook {
+    box-shadow: 0 30px 80px var(--shadow);
+  }
+
+  #flipbook .page {
+    background: var(--paper);
+    overflow: hidden;
+  }
+
+  #flipbook .page img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    background: var(--paper);
+  }
+
+  .nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(20, 18, 15, 0.55);
+    border: 1px solid rgba(201, 184, 150, 0.3);
+    color: var(--paper);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+    z-index: 5;
+  }
+
+  .nav-arrow:hover { background: rgba(138, 109, 59, 0.8); }
+  #prev-btn { left: 16px; }
+  #next-btn { right: 16px; }
+
+  #bottombar {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 12px;
+    background: #000;
+    border-top: 1px solid rgba(201, 184, 150, 0.15);
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--accent-soft);
+  }
+
+  #page-indicator { min-width: 70px; text-align: center; }
+
+  #loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 18, 15, 0.92);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 100;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--accent-soft);
+    font-size: 13px;
+    gap: 14px;
+  }
+
+  .spinner {
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(201, 184, 150, 0.25);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 640px) {
+    .upload-card { padding: 40px 28px; }
+    .upload-card h1 { font-size: 22px; }
+    #doc-title { display: none; }
+    .nav-arrow { width: 36px; height: 36px; font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Upload screen -->
+  <div id="upload-screen">
+    <div class="upload-card">
+      <h1>Flipbook Viewer</h1>
+      <p>Upload a PDF and it opens as a page-turning book, right here on your own site.</p>
+      <input type="file" id="file-input" accept="application/pdf">
+      <button class="upload-btn" onclick="document.getElementById('file-input').click()">Choose PDF</button>
+      <div class="drop-hint">or drag and drop a file anywhere on this page</div>
+      <div id="upload-status"></div>
+    </div>
+  </div>
+
+  <!-- Viewer screen -->
+  <div id="viewer-screen">
+    <div id="topbar">
+      <div id="doc-title">Surat untuk Titimangsa dan Segala Isinya (2026)</div>
+      <button class="topbar-btn" id="new-file-btn">Open another PDF</button>
+    </div>
+
+    <div id="stage-wrap">
+      <button class="nav-arrow" id="prev-btn" aria-label="Previous page">&#10094;</button>
+      <div id="flipbook"></div>
+      <button class="nav-arrow" id="next-btn" aria-label="Next page">&#10095;</button>
+    </div>
+
+    <div id="bottombar">
+      <button class="topbar-btn" id="prev-btn-2">&#10094; Prev</button>
+      <div id="page-indicator">1 / 1</div>
+      <button class="topbar-btn" id="next-btn-2">Next &#10095;</button>
+    </div>
+  </div>
+
+</div>
+
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <div id="loading-text">Rendering pages…</div>
+</div>
+
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  const uploadScreen = document.getElementById('upload-screen');
+  const viewerScreen = document.getElementById('viewer-screen');
+  const fileInput = document.getElementById('file-input');
+  const uploadStatus = document.getElementById('upload-status');
+  const loadingOverlay = document.getElementById('loading-overlay');
+  const loadingText = document.getElementById('loading-text');
+  const flipbookEl = document.getElementById('flipbook');
+  const docTitle = document.getElementById('doc-title');
+  const pageIndicator = document.getElementById('page-indicator');
+
+  let pageFlip = null;
+  let currentAspect = 1;
+
+  // ---- File selection (click or drag/drop) ----
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length) handleFile(e.target.files[0]);
+  });
+
+  window.addEventListener('dragover', (e) => e.preventDefault());
+  window.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+
+  document.getElementById('new-file-btn').addEventListener('click', () => {
+    viewerScreen.style.display = 'none';
+    uploadScreen.style.display = 'flex';
+    uploadStatus.textContent = '';
+    fileInput.value = '';
+    if (pageFlip) { pageFlip.destroy(); pageFlip = null; }
+    flipbookEl.innerHTML = '';
+  });
+
+  // ---- Listeners that are added ONCE (not every time a book loads) ----
+  window.addEventListener('resize', () => {
+    if (pageFlip) resizeFlipbook(currentAspect);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!pageFlip || viewerScreen.style.display === 'none') return;
+    if (e.key === 'ArrowRight') pageFlip.flipNext();
+    if (e.key === 'ArrowLeft') pageFlip.flipPrev();
+  });
+
+  // ---- Auto-load a PDF that sits next to this page ----
+  // Put a file named exactly "book.pdf" in the same folder as this HTML file
+  // and it opens automatically for every visitor — no upload step needed.
+  // Rename BOOK_FILENAME below if you want to use a different filename.
+  const BOOK_FILENAME = 'book.pdf';
+
+  async function tryAutoLoad() {
+    let res;
+    try {
+      res = await fetch(BOOK_FILENAME, { cache: 'no-store' });
+    } catch (err) {
+      console.log('Could not reach ' + BOOK_FILENAME + '; showing upload screen.');
+      return;
+    }
+    if (!res.ok) {
+      console.log(BOOK_FILENAME + ' not found (status ' + res.status + '); showing upload screen.');
+      return;
+    }
+
+    try {
+      const arrayBuffer = await res.arrayBuffer();
+      await renderPdfToFlipbook(arrayBuffer);
+    } catch (err) {
+      // The file was found but something went wrong while building the book.
+      console.error('Flipbook error:', err);
+      loadingOverlay.style.display = 'none';
+      viewerScreen.style.display = 'none';
+      uploadScreen.style.display = 'flex';
+      uploadStatus.textContent = 'Could not open ' + BOOK_FILENAME + '. You can choose the PDF manually.';
+    }
+  }
+  tryAutoLoad();
+
+  async function handleFile(file) {
+    if (file.type !== 'application/pdf') {
+      uploadStatus.textContent = 'Please choose a PDF file.';
+      return;
+    }
+    uploadStatus.textContent = 'Reading "' + file.name + '"…';
+    docTitle.textContent = file.name.replace(/\.pdf$/i, '');
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      await renderPdfToFlipbook(arrayBuffer);
+    } catch (err) {
+      console.error(err);
+      uploadStatus.textContent = 'Could not read that PDF. Try another file.';
+      loadingOverlay.style.display = 'none';
+      viewerScreen.style.display = 'none';
+      uploadScreen.style.display = 'flex';
+    }
+  }
+
+  async function renderPdfToFlipbook(arrayBuffer) {
+    loadingOverlay.style.display = 'flex';
+    loadingText.textContent = 'Loading document…';
+
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const numPages = pdf.numPages;
+    const pageImages = [];
+
+    // Determine a render scale that keeps things crisp but reasonably light.
+    const targetWidth = 1000;
+
+    for (let i = 1; i <= numPages; i++) {
+      loadingText.textContent = `Rendering page ${i} of ${numPages}…`;
+      const page = await pdf.getPage(i);
+      const baseViewport = page.getViewport({ scale: 1 });
+      const scale = targetWidth / baseViewport.width;
+      const viewport = page.getViewport({ scale });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d');
+
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      pageImages.push({
+        dataUrl: canvas.toDataURL('image/jpeg', 0.85),
+        width: viewport.width,
+        height: viewport.height
+      });
+      // free canvas memory
+      canvas.width = 0;
+      canvas.height = 0;
+    }
+
+    // Book layout rule: first page and last page always stand alone (front/back
+    // cover), everything between pairs up into two-page spreads — like a real
+    // bound book. The page-flip library gives us that for free once the total
+    // page count is even, so if the PDF has an odd number of pages we slot in
+    // one blank filler page right before the last page to make the math work,
+    // without disturbing which real page ends up alone at the front or back.
+    let displayLabels = pageImages.map((_, i) => i + 1);
+    if (numPages % 2 === 1 && numPages > 2) {
+      const lastPage = pageImages.pop();
+      pageImages.push({ isBlank: true });
+      pageImages.push(lastPage);
+
+      displayLabels = [];
+      for (let i = 1; i < numPages; i++) displayLabels.push(i);
+      displayLabels.push(null); // the blank filler
+      displayLabels.push(numPages);
+    }
+
+    buildFlipbook(pageImages, displayLabels, numPages);
+    loadingOverlay.style.display = 'none';
+  }
+
+  function buildFlipbook(pageImages, displayLabels, totalRealPages) {
+    // Clean up any previous book first
+    if (pageFlip) { pageFlip.destroy(); pageFlip = null; }
+    flipbookEl.innerHTML = '';
+
+    // Use the first (always real, never blank) page's aspect ratio to size the book.
+    currentAspect = pageImages[0].width / pageImages[0].height;
+
+    pageImages.forEach((p) => {
+      const pageDiv = document.createElement('div');
+      pageDiv.className = 'page';
+      if (!p.isBlank) {
+        const img = document.createElement('img');
+        img.src = p.dataUrl;
+        pageDiv.appendChild(img);
+      }
+      flipbookEl.appendChild(pageDiv);
+    });
+
+    // FIX: hide only the upload screen. (The old code hid its parent, #app,
+    // which also contained the viewer, so the book was invisible and had
+    // zero size when the library tried to measure it.)
+    uploadScreen.style.display = 'none';
+    viewerScreen.style.display = 'flex';
+
+    sizeAndInitFlipbook(currentAspect, displayLabels, totalRealPages);
+  }
+
+  function computeDimensions(aspect) {
+    const stage = document.getElementById('stage-wrap');
+    const maxW = Math.max(stage.clientWidth - 40, 200);
+    const maxH = Math.max(stage.clientHeight - 20, 250);
+
+    // Book shows two pages side by side (spread), so total aspect is roughly 2x page aspect.
+    let width = maxW / 2;
+    let height = width / aspect;
+
+    if (height > maxH) {
+      height = maxH;
+      width = height * aspect;
+    }
+    return { width: Math.floor(width), height: Math.floor(height) };
+  }
+
+  function sizeAndInitFlipbook(aspect, displayLabels, totalRealPages) {
+    const { width, height } = computeDimensions(aspect);
+
+    pageFlip = new St.PageFlip(flipbookEl, {
+      width: width,
+      height: height,
+      size: 'fixed',
+      minWidth: 200,
+      maxWidth: 1200,
+      minHeight: 250,
+      maxHeight: 1600,
+      maxShadowOpacity: 0.5,
+      showCover: true,
+      mobileScrollSupport: true,
+      usePortrait: window.innerWidth < 700
+    });
+
+    pageFlip.loadFromHTML(document.querySelectorAll('#flipbook .page'));
+
+    pageFlip.on('flip', (e) => updatePageIndicator(e.data, displayLabels, totalRealPages));
+    updatePageIndicator(0, displayLabels, totalRealPages);
+
+    document.getElementById('prev-btn').onclick = () => pageFlip.flipPrev();
+    document.getElementById('next-btn').onclick = () => pageFlip.flipNext();
+    document.getElementById('prev-btn-2').onclick = () => pageFlip.flipPrev();
+    document.getElementById('next-btn-2').onclick = () => pageFlip.flipNext();
+  }
+
+  function resizeFlipbook(aspect) {
+    const { width, height } = computeDimensions(aspect);
+    pageFlip.update({ width, height });
+  }
+
+  function updatePageIndicator(currentIndex, displayLabels, totalRealPages) {
+    let label = displayLabels[currentIndex];
+    if (label == null) {
+      // Landed on the blank filler page — show the nearest real page before it.
+      for (let i = currentIndex - 1; i >= 0; i--) {
+        if (displayLabels[i] != null) { label = displayLabels[i]; break; }
+      }
+    }
+    pageIndicator.textContent = `${label} / ${totalRealPages}`;
+  }
+</script>
+
+</body>
+</html>
