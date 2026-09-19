@@ -242,6 +242,33 @@
 #topbar {
   display: none !important;
 }
+  #flipbook {
+  transition: transform 0.25s ease;
+  transform-origin: center center;
+}
+#flipbook.dragging { transition: none; }
+#flipbook.zoomed { cursor: grab; }
+
+#zoom-btn {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(20, 18, 15, 0.6);
+  border: 1px solid rgba(201, 184, 150, 0.35);
+  color: var(--paper);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+#zoom-btn:hover { background: rgba(138, 109, 59, 0.8); }
+#zoom-btn svg { width: 22px; height: 22px; }
+  
 </style>
 </head>
 <body>
@@ -266,6 +293,16 @@
       <div id="page-indicator">1 / 1</div>
       <button class="topbar-btn" id="next-btn-2">Next &#10095;</button>
     </div>
+    
+    <button id="zoom-btn" aria-label="Zoom in or out">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <circle cx="10" cy="10" r="6"/>
+    <line x1="15" y1="15" x2="21" y2="21"/>
+    <line x1="7.5" y1="10" x2="12.5" y2="10"/>
+    <line id="zoom-plus" x1="10" y1="7.5" x2="10" y2="12.5"/>
+  </svg>
+</button>
+    
   </div>
 
 </div>
@@ -290,7 +327,7 @@
   const FIRST_BATCH = 4;
 
   // Sharpness of the pages. Higher = crisper but slower to load.
-  const TARGET_WIDTH = 1000;
+  const TARGET_WIDTH = 1400;
 
   let pageFlip = null;
    // ---- Flip sound: loads once, then plays with almost no delay ----
@@ -497,6 +534,75 @@ pageFlip = new St.PageFlip(flipbookEl, {
     }
     pageIndicator.textContent = `${label} / ${totalRealPages}`;
   }
+
+  // ---- Zoom (magnifier button) ----
+const zoomBtn = document.getElementById('zoom-btn');
+const zoomPlus = document.getElementById('zoom-plus');
+const stageEl = document.getElementById('stage-wrap');
+const ZOOM_LEVELS = [1, 2, 3];   // add or change levels here
+let zoomIndex = 0;
+let panX = 0, panY = 0;
+let dragStart = null;
+
+function clampPan() {
+  const z = ZOOM_LEVELS[zoomIndex];
+  const maxX = flipbookEl.offsetWidth * (z - 1) / 2;
+  const maxY = flipbookEl.offsetHeight * (z - 1) / 2;
+  panX = Math.max(-maxX, Math.min(maxX, panX));
+  panY = Math.max(-maxY, Math.min(maxY, panY));
+}
+
+function applyZoom() {
+  const z = ZOOM_LEVELS[zoomIndex];
+  flipbookEl.style.transform = `translate(${panX}px, ${panY}px) scale(${z})`;
+  flipbookEl.classList.toggle('zoomed', z > 1);
+  // plus sign while more zoom is available, minus on the last level
+  zoomPlus.style.display = zoomIndex === ZOOM_LEVELS.length - 1 ? 'none' : '';
+}
+
+zoomBtn.addEventListener('click', () => {
+  zoomIndex = (zoomIndex + 1) % ZOOM_LEVELS.length;
+  if (zoomIndex === 0) { panX = 0; panY = 0; }
+  const zoomed = zoomIndex > 0;
+  // while zoomed, the book stops reacting to touches so dragging pans instead of flipping
+  flipbookEl.style.pointerEvents = zoomed ? 'none' : '';
+  stageEl.style.touchAction = zoomed ? 'none' : '';
+  clampPan();
+  applyZoom();
+});
+
+stageEl.addEventListener('pointerdown', (e) => {
+  if (zoomIndex === 0) return;
+  dragStart = { x: e.clientX - panX, y: e.clientY - panY };
+  flipbookEl.classList.add('dragging');
+  stageEl.setPointerCapture(e.pointerId);
+});
+
+stageEl.addEventListener('pointermove', (e) => {
+  if (!dragStart) return;
+  panX = e.clientX - dragStart.x;
+  panY = e.clientY - dragStart.y;
+  clampPan();
+  applyZoom();
+});
+
+function endDrag() {
+  dragStart = null;
+  flipbookEl.classList.remove('dragging');
+}
+stageEl.addEventListener('pointerup', endDrag);
+stageEl.addEventListener('pointercancel', endDrag);
+
+  let lastWidth = window.innerWidth;
+window.addEventListener('resize', () => {
+  if (window.innerWidth === lastWidth) return; // ignore address-bar show/hide
+  lastWidth = window.innerWidth;
+  zoomIndex = 0; panX = 0; panY = 0;
+  flipbookEl.style.pointerEvents = '';
+  stageEl.style.touchAction = '';
+  applyZoom();
+});
+  
 </script>
 
 </body>
