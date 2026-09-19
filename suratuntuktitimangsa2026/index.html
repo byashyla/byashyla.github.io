@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Surat untuk Titimangsa dan Segala Isinya (2026)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
+<style>
+  :root {
+    --ink: #1c1a17;
+    --paper: #f6f3ec;
+    --accent: #8a6d3b;
+    --accent-soft: #c9b896;
+    --shadow: rgba(28, 26, 23, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: var(--ink);
+    font-family: 'Georgia', 'Iowan Old Style', serif;
+    color: var(--paper);
+    overflow: hidden;
+  }
+
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  /* ---------- Error message (only shown if the book cannot open) ---------- */
+  #error-msg {
+    display: none;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    color: var(--accent-soft);
+  }
+
+  /* ---------- Viewer screen ---------- */
+  #viewer-screen {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  #topbar {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 24px;
+    background: #000;
+    border-bottom: 1px solid rgba(201, 184, 150, 0.15);
+    flex-shrink: 0;
+  }
+
+  #doc-title {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    color: var(--paper);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar-btn {
+    font-family: inherit;
+    background: transparent;
+    border: 1px solid rgba(201, 184, 150, 0.3);
+    color: var(--accent-soft);
+    padding: 7px 14px;
+    border-radius: 2px;
+    font-size: 12px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+
+  .topbar-btn:hover {
+    border-color: var(--accent-soft);
+    color: var(--paper);
+  }
+
+  #stage-wrap {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 20px;
+    overflow: hidden;
+    background: #000;
+  }
+
+  #flipbook {
+    box-shadow: 0 30px 80px var(--shadow);
+  }
+
+  #flipbook .page {
+    background: var(--paper);
+    overflow: hidden;
+  }
+
+  #flipbook .page img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    background: var(--paper);
+  }
+
+  .nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(20, 18, 15, 0.55);
+    border: 1px solid rgba(201, 184, 150, 0.3);
+    color: var(--paper);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+    z-index: 5;
+  }
+
+  .nav-arrow:hover { background: rgba(138, 109, 59, 0.8); }
+  #prev-btn { left: 16px; }
+  #next-btn { right: 16px; }
+
+  #bottombar {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 12px;
+    background: #000;
+    border-top: 1px solid rgba(201, 184, 150, 0.15);
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--accent-soft);
+  }
+
+  #page-indicator { min-width: 70px; text-align: center; }
+
+  /* Simple spinner shown for the few seconds before the book opens */
+  #loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+
+  .spinner {
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(201, 184, 150, 0.25);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 640px) {
+    #doc-title { display: none; }
+    .nav-arrow { width: 36px; height: 36px; font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <div id="error-msg"></div>
+
+  <div id="viewer-screen">
+    <div id="topbar">
+      <div id="doc-title">Surat untuk Titimangsa dan Segala Isinya (2026)</div>
+    </div>
+
+    <div id="stage-wrap">
+      <button class="nav-arrow" id="prev-btn" aria-label="Previous page">&#10094;</button>
+      <div id="flipbook"></div>
+      <button class="nav-arrow" id="next-btn" aria-label="Next page">&#10095;</button>
+    </div>
+
+    <div id="bottombar">
+      <button class="topbar-btn" id="prev-btn-2">&#10094; Prev</button>
+      <div id="page-indicator">1 / 1</div>
+      <button class="topbar-btn" id="next-btn-2">Next &#10095;</button>
+    </div>
+  </div>
+
+</div>
+
+<div id="loading-overlay"><div class="spinner"></div></div>
+
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  const viewerScreen = document.getElementById('viewer-screen');
+  const loadingOverlay = document.getElementById('loading-overlay');
+  const errorMsg = document.getElementById('error-msg');
+  const flipbookEl = document.getElementById('flipbook');
+  const pageIndicator = document.getElementById('page-indicator');
+
+  // The PDF that opens automatically. Keep it in the same folder as this file.
+  const BOOK_FILENAME = 'book.pdf';
+
+  // The book opens as soon as this many pages are ready; the rest keep
+  // rendering quietly in the background while people start reading.
+  const FIRST_BATCH = 4;
+
+  // Sharpness of the pages. Higher = crisper but slower to load.
+  const TARGET_WIDTH = 1000;
+
+  let pageFlip = null;
+  let currentAspect = 1;
+
+  window.addEventListener('resize', () => {
+    if (pageFlip) resizeFlipbook(currentAspect);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!pageFlip) return;
+    if (e.key === 'ArrowRight') pageFlip.flipNext();
+    if (e.key === 'ArrowLeft') pageFlip.flipPrev();
+  });
+
+  function showError(message) {
+    loadingOverlay.style.display = 'none';
+    viewerScreen.style.display = 'none';
+    errorMsg.textContent = message;
+    errorMsg.style.display = 'flex';
+  }
+
+  async function openBook() {
+    try {
+      const res = await fetch(BOOK_FILENAME);
+      if (!res.ok) {
+        throw new Error(BOOK_FILENAME + ' not found (status ' + res.status + ')');
+      }
+      const arrayBuffer = await res.arrayBuffer();
+      await renderBook(arrayBuffer);
+    } catch (err) {
+      console.error('Flipbook error:', err);
+      showError('Could not open the book. Please refresh the page.');
+    }
+  }
+  openBook();
+
+  async function renderBook(arrayBuffer) {
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const numPages = pdf.numPages;
+
+    // Book layout: first and last page stand alone (covers), everything in
+    // between pairs up into spreads. That needs an even page count, so with an
+    // odd count we add one blank page just before the last page.
+    const needsFiller = numPages % 2 === 1 && numPages > 2;
+    const totalSlots = needsFiller ? numPages + 1 : numPages;
+    const slotFor = (n) => (needsFiller && n === numPages) ? totalSlots - 1 : n - 1;
+
+    // displayLabels[slot] = real PDF page number shown in that slot (null = blank filler)
+    const displayLabels = new Array(totalSlots).fill(null);
+    for (let n = 1; n <= numPages; n++) displayLabels[slotFor(n)] = n;
+
+    // Create an empty page for every slot right away; images are added as they finish.
+    flipbookEl.innerHTML = '';
+    const pageDivs = [];
+    for (let s = 0; s < totalSlots; s++) {
+      const div = document.createElement('div');
+      div.className = 'page';
+      flipbookEl.appendChild(div);
+      pageDivs.push(div);
+    }
+
+    // Use page 1's shape to size the whole book.
+    const firstPage = await pdf.getPage(1);
+    const firstViewport = firstPage.getViewport({ scale: 1 });
+    currentAspect = firstViewport.width / firstViewport.height;
+
+    async function renderPage(n) {
+      const page = await pdf.getPage(n);
+      const base = page.getViewport({ scale: 1 });
+      const viewport = page.getViewport({ scale: TARGET_WIDTH / base.width });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+
+      const img = document.createElement('img');
+      img.src = canvas.toDataURL('image/jpeg', 0.85);
+      pageDivs[slotFor(n)].appendChild(img);
+
+      canvas.width = 0; // free memory
+      canvas.height = 0;
+    }
+
+    // 1) Render just the first few pages, then open the book straight away.
+    const firstBatch = Math.min(FIRST_BATCH, numPages);
+    for (let n = 1; n <= firstBatch; n++) await renderPage(n);
+
+    buildFlipbook(displayLabels, numPages);
+    loadingOverlay.style.display = 'none';
+
+    // 2) Render the remaining pages in the background.
+    try {
+      for (let n = firstBatch + 1; n <= numPages; n++) {
+        await renderPage(n);
+        await new Promise((r) => setTimeout(r, 0)); // let the browser breathe
+      }
+    } catch (err) {
+      console.error('A page failed to render:', err);
+    }
+  }
+
+  function buildFlipbook(displayLabels, totalRealPages) {
+    viewerScreen.style.display = 'flex';
+
+    const { width, height } = computeDimensions(currentAspect);
+
+    pageFlip = new St.PageFlip(flipbookEl, {
+      width: width,
+      height: height,
+      size: 'fixed',
+      minWidth: 200,
+      maxWidth: 1200,
+      minHeight: 250,
+      maxHeight: 1600,
+      maxShadowOpacity: 0.5,
+      showCover: true,
+      mobileScrollSupport: true,
+      usePortrait: window.innerWidth < 700
+    });
+
+    pageFlip.loadFromHTML(document.querySelectorAll('#flipbook .page'));
+
+    pageFlip.on('flip', (e) => updatePageIndicator(e.data, displayLabels, totalRealPages));
+    updatePageIndicator(0, displayLabels, totalRealPages);
+
+    document.getElementById('prev-btn').onclick = () => pageFlip.flipPrev();
+    document.getElementById('next-btn').onclick = () => pageFlip.flipNext();
+    document.getElementById('prev-btn-2').onclick = () => pageFlip.flipPrev();
+    document.getElementById('next-btn-2').onclick = () => pageFlip.flipNext();
+  }
+
+  function computeDimensions(aspect) {
+    const stage = document.getElementById('stage-wrap');
+    const maxW = Math.max(stage.clientWidth - 40, 200);
+    const maxH = Math.max(stage.clientHeight - 20, 250);
+
+    // The book shows two pages side by side, so each page gets half the width.
+    let width = maxW / 2;
+    let height = width / aspect;
+
+    if (height > maxH) {
+      height = maxH;
+      width = height * aspect;
+    }
+    return { width: Math.floor(width), height: Math.floor(height) };
+  }
+
+  function resizeFlipbook(aspect) {
+    const { width, height } = computeDimensions(aspect);
+    pageFlip.update({ width, height });
+  }
+
+  function updatePageIndicator(currentIndex, displayLabels, totalRealPages) {
+    let label = displayLabels[currentIndex];
+    if (label == null) {
+      // On the blank filler page: show the nearest real page before it.
+      for (let i = currentIndex - 1; i >= 0; i--) {
+        if (displayLabels[i] != null) { label = displayLabels[i]; break; }
+      }
+    }
+    pageIndicator.textContent = `${label} / ${totalRealPages}`;
+  }
+</script>
+
+</body>
+</html>
